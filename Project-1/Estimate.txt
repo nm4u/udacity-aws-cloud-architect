@@ -1,0 +1,57 @@
+Estimates of  RTO and RPO on AZ/Region Outage
+---------------------------------------------
+Because or RDS architecture is having Primary Database deployed in Multi-AZ of the us-east-1 region. and also it has a read-replica setup in another region(eu-central-1), but still, if in case of outage(AZ or region), there will be some business impact, though it is considerably less and very unlikely. 
+
+Given below are the Estimation of RTO and RPO specific to a Outage type. 
+
+1. RTO/RPO Estimation when a single Availability Zone(AZ) is down. 
+	i) AZ(RDS Active) of Primary Region is down: 
+	   00:00 - Problem Starts - Database Connections/transaction Started failing : 0 Minute
+	   00:02 - When the Active RDS AZ is down, then as part of failover, the DB automatically switches to the standby AZ between 60-120 Sec, without any manual interaction. So no action needed. : 2 Minute
+	  
+   	   RTO: 5 Minute (maximum 5 min in worst case, the recovery will be made from the failure situation)
+	   RPO: 5 Minutes (Maximum 5 minute, in worst case, data will be lost)
+	   
+   ii) AZ(RDS Standby) of Primary Region is down: 
+	   00:00 - Problem Starts - Standby Database is down because of the AZ outage : 0 Minute
+	   00:00 - Problem Ends - As this is standby, hence there will be absolutely no impact at all as the Active Database in another AZ is up and running, So business as usual: 0 inute
+	   
+	   RTO: 0 Minute 
+	   RPO: 0 Minutes
+ 
+ iii) AZ(RDS Read-Replica Active) of Secondary Region is down: 
+	   00:00 - Problem Starts - Read Replica Database is down because of the AZ outage : 0 Minute
+	   00:00 - Problem Ends - As this is Just Read Replica, hence there will be absolutely no impact at all as the Active Database in another region is up and running, So business as usual: 0 Minute
+	   
+	   RTO: 0 Minute 
+	   RPO: 0 Minutes
+   
+   iv) AZ(RDS Read-Replica Standby) of Secondary Region is down: 
+	   00:00 - Problem Starts - Read Replica Database is down because of the AZ outage : 0 Minute
+	   00:00 - Problem Ends - As this is Just Read Replica, hence there will be absolutely no impact at all as the Active Database in another region is up and running, So business as usual: 0 Minute
+	   
+	   RTO: 0 Minute 
+	   RPO: 0 Minutes
+	   
+2. RTO/RPO Estimation when a single Region is down. 
+	i) Primary Region(RDS Active) is down: 
+	   00:00 - Problem Starts - Database Connections/transaction Started failing : 0 Minute
+	   00:05 - Being both the AZs down in the region, hence it's a severity/priority 1 situation, so there will be high alert to the on-call staff. : 5 Minute
+	   00:10 - Take 10 minutes time for the On-Call Staff to get out of bed and login in the system: 10 Minute
+	   00:20 - Takes 10 minute for the complete Diagnosis of the issue, Nothing(any of the AZ) is reachable in the Primary Region, hence he concluded it's a region outage: 15 Minute
+	   00:30 - Stop the Application that connects with the outage/off-line Database : 5 Minute
+	   00:35 - Find the Restoration Steps and checklist Document and prepare the plan to Route the Application traffic to the Secondary Region Database: 5 Min
+	   00:45 - Promote the Secondary Region Read Replica Database as the Primary/Master DB and get the new Database Endpoint: 10 Min
+	   00:55 - Update the Application to connect to the new master database endpoint and if needed, restart the application to reflect the change : 10 Minute
+	   00:55 - Database Connection Restored and Application started communicating with the new Database for the read and write calls: 0 Minute
+	   01:00 - Start Monitoring for few minutes and then communicate about the outage to the concerned departments and stake holders: 5 Minute. 
+	   
+	   RTO: 55 Minute (00:00 - 00:55)
+	   RPO: 30 Minute (00:00 - 00:30)
+	   
+   ii) Secondary Region(RDS Read Replica) is down: 
+	   00:00 - Problem Starts - Read Replica Database is down because of the Secondary Region outage : 0 Minute
+	   00:00 - Problem Ends - As this is Just Read Replica, hence there will be absolutely no impact at all as the Active Database in another region is up and running, So business as usual: 0 Minute
+	   
+	   RTO: 0 Minute 
+	   RPO: 0 Minutes

@@ -1,0 +1,42 @@
+MySQL [udacity]>
+MySQL [udacity]>
+MySQL [udacity]> show databases;
+ERROR 2006 (HY000): MySQL server has gone away
+No connection. Trying to reconnect...
+Connection id:    10
+Current database: udacity
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| udacity            |
++--------------------+
+5 rows in set (0.01 sec)
+
+MySQL [udacity]> insert into employee values ('Marc', '102362');
+Query OK, 1 row affected (0.17 sec)
+
+MySQL [udacity]> create table customers (name varchar(50), id varchar(6));
+Query OK, 0 rows affected (0.06 sec)
+
+MySQL [udacity]> show tables;
++-------------------+
+| Tables_in_udacity |
++-------------------+
+| customers         |
+| employee          |
++-------------------+
+2 rows in set (0.00 sec)
+
+MySQL [udacity]> select * from employee;
++----------+--------+
+| name     | id     |
++----------+--------+
+| Niranjan | 182152 |
+| Marc     | 102362 |
++----------+--------+
+2 rows in set (0.00 sec)
