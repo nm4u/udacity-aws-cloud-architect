@@ -1,0 +1,14 @@
+
+# What additional architectural change can be made to reduce the internet facing attack surface of the web application instance.
+Implement the Web Server in the Private Subnet. Block SSH traffic. 
+In addition, implement NACL to deny traffic from unknown or untrustable sources. 
+Implement WAF infront of Load Balancer. 
+
+# Assuming the IAM permissions for the S3 bucket are still insecure, would creating VPC private endpoints for S3 prevent the unauthorized access to the secrets bucket.
+No, as the IAM permissions are still insecure, one can enter inside VPC using those, and then they can make use of VPC Endpoints to access S3 from inside the VPC. 
+
+# Will applying default encryption setting to the s3 buckets encrypt the data that already exists?
+No, existing data in the bucket will not be encrypted, it's only the data that created after enabling the Bucket encryption will be encrypted. 
+
+# What would happen if the original cloud formation templates are applied to this environment.
+Then, it will override all the changes manually we did and the environment will be exactly same as it was before when we created the stack in the beginning from the cloudformation templates. 

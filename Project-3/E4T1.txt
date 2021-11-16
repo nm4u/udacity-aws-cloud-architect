@@ -1,0 +1,15 @@
+
+# Identify 2-3 changes that can be made to our environment to prevent an ssh brute force attack from the internet.
+
+1. Set up Web Application Firewall(WAF) in front of Application Load Balancer using AWS WAF (AWS WAF can be configured as a shield to protect the Load balancers and also CloudFront from attackers) from external attacks, e.g. SQL Injection. 
+
+2. The SSH Port 22 on the EC2 Web Server Instance is currently exposed to the internet as the instance is running on public subnet. As a result, attackers will use this as an gate to enter inside the Web Server. To harden the security here, it's recommended to have the Web Server EC2 Instance in the private subnet and use bastion host from the public subnet in order to SSH to Port 22 on the Web Server, in that case, we can block the port 22 from internet and can create a security group to allow port 22 on web server from the bastion host. 
+
+3. Configure the Web Server Instance on Private Subnet, and block all the ports from any other instance to the Web Server, except from the Load Balancer Security Groups. Block all SSH connections with EC2 Instance, so do not Use Port 22 at all to login to the EC2 Intance, instead Use AWS System Manager in combination with IAM Role to connect to the EC2 Instance and perform any needed action on the server. 
+
+
+# Neither instance should have had access to the secret recipes bucket, in the even that instance API credentials were compromised how could we have prevented access to sensitive data.
+
+- First and Foremost, Encrypt any Sensitive Data by default. In worst case, if API credentials are compromised, even then if your data is encrypted, then the attackers can't read the content. So we must use this option always, also it is free of cost by AWS if we use Server-Side-Encryption managed by S3. Hence enable the Server-Side-Encryption(SSE-S3) for all the sensitive bucket, in our case, the secret recipes bucket. 
+
+- Block Public access of the sensitive buckets (secret_recipes bucket). Only grant the access to this bucket using IAM Roles to the privileged users. In that way, none of the instances will get access to the secret_recipes bucket, also no one from internet. 

@@ -1,0 +1,23 @@
+Research and analyze which of the vulnerabilities appear to be related to the code that was deployed for the environment in this project.
+
+AWS Config:
+
+1. EC2 Instances are having Public IP which is not required as they should get accessed by the Application Load Balancer. Having public IP for EC2 instances enable the attackers to access them from the public domain(internet) using the public ip. 
+2. EC2 Instances are getting accessed by using SSH Protocol from the public domain. If any one can get hold of the private keys, they can easily enter inside EC2 instances and perform any unwanted actions from security point of view. To avoid these type of access from public domain, it's highly recommended to use AWS System Manager along with the IAM Role. 
+3. EC2 Security Group: The security groups allow unrestricted incoming traffic from any source(0.0.0.0/0) for ports other than 80 and 443, normally we should restrict them from both source and desitnation point of view, in source we can provide specific IP range wherever possible, and in destination we should only open the specific port rather than opening for all ports. 
+4. Elastic Load Balancing has deletion protection enabled parameter set to false, with this, one can accidentally delete the elastic load balancer, which will create a unfavourable or downtime situation until a new load balancer created again. 
+5. EBS Volumes, that are attached with the EC2 instances are not Encrypted. This will enable the data/content of the volume to be read/accessed without the encryption. 
+6. S3 bucket has no default server side encryption enabled(e.g. cand-c3-free-recipes and cand-c3-secret-recipes buckets), without encryption, the data or objects inside the bucket can be read/accessed if someone get the unauthorized access. If the server side encryption is disabled, then there should S3 bucket policy that explicitly denies put-object requests without server side encryption. None of them are present, hence making the S3 Data vulnerabilities open. 
+
+
+Bonus - provide recommendations on how to remediate the vulnerabilities.
+
+Here, listing out how to remediate the above vulnerabilities. 
+
+1. Do not assign Public IP on EC2 instances that are behind an applicaiton Load Balancer, create the EC2 instances on a private subnet. 
+Alternative, you can also change the subnet setting to NOT to auto-assign public IP for EC2 Instances launched in the public subnet. In that case, even though your EC2 instances will be created on Public Subnet, they still don't have Public IP. 
+2. Do not use SSH protocol to access the EC2 servers using putty or openshh. Rather, create a role in IAM to use AWS System Manager to access the EC2 Instance. 
+3. Allow only ports that is needed from the internet, in this case, allow only port 80, rest others do not allow in the security group. Hence remove the Security group entry with Port Range ALL, Protocol ALL, Source 0.0.0.0/0 from the WebAppSG.
+4. Set the Deletion Protection Enabled to True for the Load Balancer, in that case, the load balancer can't be deleted accidentally. 
+5. Encrypt the EBS Volumes using AWS KMS. 
+6. Enable the Server-Side-Encryption for the S3 buckets either by using SSE-S3 or by AWS KMS. 

@@ -1,0 +1,19 @@
+# Identify tools that will allow you to do the following:
+
+## Scan infrastructure as code templates
+Regula, TFSec, Terrafirma, TFLint, Accurics, CloudSploit
+
+### Example vulnerability
+Excessive Permissions than required (e.g. usage of * to allow all resources)
+
+##Scan AMI’s or containers for OS vulnerabilities
+Clair, Anchore, Harbor, Ansible
+
+### Example vulnerability
+Security parameters compromised or hardcoded
+
+##Scan an AWS environment for cloud configuration vulnerabilities
+AWS Inspector
+
+### Example vulnerability
+Instance connected to Internet for all port and all protocols, S3 Bucket by default not encrypted. 

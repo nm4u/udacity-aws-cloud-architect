@@ -1,0 +1,14 @@
+# Describe GuardDuty findings that were detected related to the brute force attack
+UnauthorizedAccess:EC2/SSHBruteForce
+Finding ID: 84be93f22f1055c438c16686b016e93eFeedback
+Severity: High
+Description: i-04c4e7da8b42e189f is performing SSH brute force attacks against 10.192.10.249. Brute force attacks are used to gain unauthorized access to your instance by guessing the SSH password.
+
+# Research the AWS Guard Duty documentation page and explain how GuardDuty may have detected this attack - i.e. what was its source of information.
+Guard Duty monitor the SSH Traffic on port 22, hence This finding is generated only through monitoring traffic on port 22. If your SSH services are configured to use other ports, this finding is not generated.
+This finding informs you that an EC2 instance in your AWS environment was involved in a brute force attack aimed at obtaining passwords to SSH services on Linux-based systems. This can indicate unauthorized access to your AWS resources.
+At times, we may need baston hosts running on public subnet to SSH to instances running on private subnet, then also, we can notice this GuardDuty finding, but as this is our intention to access private subnet EC2 instances from the bastion host, hence this should not be a problem, and in order to enable the GuardDuty not to treat this as a problem, we should suppress this finding. 
+If this is the case(Bastion Host), we recommend that you set up a suppression rule for this finding. The suppression rule should consist of two filter criteria. The first criteria should use the Finding type attribute with a value of UnauthorizedAccess:EC2/SSHBruteForce. The second filter criteria should match the instance or instances that serve as a bastion host. You can use either the Instance image ID attribute or the Tag value attribute depending on which criteria is identifiable with the instances that host these tools. 
+
+
+

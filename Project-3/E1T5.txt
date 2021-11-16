@@ -1,0 +1,11 @@
+Based on the architecture diagram, and the steps you have taken so far to upload data and access the application web service, identify at least 2 obvious poor practices as it relates to security.  Include justification.
+
+# Poor practice 1
+  In the Web Service Instance - C3, The Inbound Security Group allows or exposes the connection to port 22 and 80 from any source(0.0.0.0/0). This is a very bad security practice, instead it should be as specific as possible, e.g. Load Balancer IP for port 80 and My public IP for port 22. Unless it's not specific, then there is high risk of compromising these connections, as a result there will be security holes for the outsiders, who can use these loopholes as opportunities and tries to attack the EC2 Instance for unauthorized access/purposes. 
+
+In fact, also the port 5000 is exposed from any source, that's also have the same vulnerabilities. 
+And most importantly, there is a security group in this instance that allow all traffic on all ports from all source, this is the worst situation as far as security is concerned. DO NOT have such situations ever, otherwise, your infrastructure will be in risk, it's not like it will open the door for the attackers, rather, it should be like, we have close the door first, so that attackers can't open it or enter inside the infrastructure. Again, to avoid such scenarios, use as much specific information as possible(specific IP Address or CIDR rrange). 
+
+# Poor practice 2
+  Something you are saying it's secret, but you are not making it secret.
+Yes, the S3 buckets, in particularly, the bucket that store secret recipes only for the privileged users who would need access to this bucket. Ideally the contents/objects/data within this bucket must be encrypted to restrict anyone without having proper access to view the secret recipe data, hence to enable such data encryption, we should have enabled the server side encryption for this bucket at least, But now, it's with default setting, where the encryption is disabled. When enabling this, you can either use either S3 Managed AWS Key(SSE-S3) or AWS KMS managed SSE(SSE-KMS). The good thing is there is no additional pricing on using SSE-S3 for enabling the server side encryption, it's absolutely free, and we should make use of this to tighten the security on data as strict as possible. 
